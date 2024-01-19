@@ -1,0 +1,22 @@
+// schema.prisma
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+    directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model shortLink {
+    id              String    @id @default(uuid())
+    name            String
+    sourceLink      String    @map(name: "source_link")
+    destinationLink String    @unique @map(name: "destination_ink")
+    createdAt       DateTime  @default(now()) @map(name: "created_at") @db.Timestamptz()
+    updatedAt       DateTime? @updatedAt @map(name: "updated_at") @db.Timestamptz()
+
+    @@map(name: "short_link")
+}
