@@ -1,11 +1,8 @@
-// import { prisma } from "@/lib/prisma";
+import React from "react";
 import { CalendarDaysIcon, HandRaisedIcon } from "@heroicons/react/24/outline";
 import { FormShortLink } from "@/components/form/FormShortLink";
 
 export default function Home() {
-  // const todos = await prisma.shortLink.findMany();
-
-  // console.log(todos);
   return (
     <main className="relative min-h-screen isolate overflow-hidden bg-gray-900 py-16 sm:py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
