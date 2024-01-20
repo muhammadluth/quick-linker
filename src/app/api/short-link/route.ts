@@ -28,7 +28,7 @@ export async function GET(req: Request) {
     });
     if (response) {
         const data: IResponseGetShortLink = {
-            base_url: req.headers.get("referer"),
+            base_url: req.headers.get("referer") || "",
             short_link_data: response
         }
         return NextResponse.json(data, { status: 200 });

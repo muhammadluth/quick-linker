@@ -4,15 +4,15 @@ export interface IFormShortLink {
 }
 
 export interface IResponseGetShortLink {
-    base_url: string | null;
+    base_url: string;
     short_link_data: IShortLink[] | [];
 }
 
 export interface IShortLink {
-    id: string | null;
-    name: string | null;
-    sourceLink: string | null;
-    destinationLink: string | null;
+    id: string;
+    name: string;
+    sourceLink: string;
+    destinationLink: string;
     createdAt?: Date | null;
     updatedAt?: Date | null;
 }
