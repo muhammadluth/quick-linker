@@ -8,20 +8,23 @@ const NotFound = lazy(() => import("@/components/page/NotFound"));
 
 export default function Preview({ params: { slug } }: Readonly<ISlugParams>) {
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const handleGet = async () => {
+    const handleGetData = async () => {
       try {
         const response = await axios.get(`/api/short-link/${slug}`);
         if (response.status === 200 && response.data.sourceLink !== "") {
           window.location.replace(response.data.sourceLink);
         }
-        setLoading(false);
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
       } catch (error: any) {
         setLoading(false);
         console.error("Error get data:", error.message);
       }
     };
-    handleGet();
+    handleGetData();
   }, [slug]);
 
   if (loading) {

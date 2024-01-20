@@ -1,19 +1,21 @@
-import React from "react";
-import { CalendarDaysIcon, HandRaisedIcon } from "@heroicons/react/24/outline";
+import React, { lazy } from "react";
+import { HandRaisedIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 import { FormShortLink } from "@/components/form/FormShortLink";
 
-export default function Home() {
+const Table = lazy(() => import("@/components/page/Table"));
+
+export default async function Home() {
   return (
     <main className="relative min-h-screen isolate overflow-hidden bg-gray-900 py-16 sm:py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-2">
-          <div className="max-w-xl lg:max-w-lg">
+          <div className="max-w-xl justify-center lg:max-w-lg">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Subscribe to our newsletter.
+              Buat link kamu jadi lebih singkat.
             </h2>
             <p className="mt-4 text-lg leading-8 text-gray-300">
-              Nostrud amet eu ullamco nisi aute in ad minim nostrud adipisicing
-              velit quis. Duis tempor incididunt dolore.
+              Quick Linker adalah aplikasi untuk membuat link kamu yang dulu
+              panjang kini jadi lebih singkat
             </p>
             <FormShortLink />
           </div>
@@ -45,6 +47,9 @@ export default function Home() {
               </dd>
             </div>
           </dl>
+        </div>
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-20">
+          <Table />
         </div>
       </div>
       <div

@@ -11,6 +11,16 @@ export async function GET(req: Request, { params: { id } }: IIDParams) {
     if (response) {
         return NextResponse.json(response, { status: 200 });
     } else {
-        return NextResponse.json({ message: "data short link not found" }, { status: 404 });
+        return NextResponse.json({ message: "error data not found" }, { status: 404 });
     }
+}
+
+
+export async function DELETE(req: Request, { params: { id } }: IIDParams) {
+    await prisma.shortLink.delete({
+        where: {
+            id: id,
+        },
+    });
+    return NextResponse.json({ message: "success delete short link" }, { status: 200 });
 }

@@ -3,8 +3,13 @@ export interface IFormShortLink {
     url: string;
 }
 
+export interface IResponseGetShortLink {
+    base_url: string;
+    short_link_data: IShortLink[];
+}
+
 export interface IShortLink {
-    id?: string;
+    id: string;
     name: string;
     sourceLink: string;
     destinationLink: string;
