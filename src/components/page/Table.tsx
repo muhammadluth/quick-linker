@@ -96,7 +96,15 @@ export default function Table() {
                   >
                     {item.name}
                   </th>
-                  <td className="w-1/2 text-center py-4">{shortLink}</td>
+                  <td className="w-1/2 text-center py-4">
+                    <a
+                      className="no-underline hover:underline hover:text-blue-600"
+                      href={shortLink}
+                      target="_blank"
+                    >
+                      {shortLink}
+                    </a>
+                  </td>
                   <td className="w-1/8 text-center py-4">
                     <div className="flex items-center justify-center">
                       <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
