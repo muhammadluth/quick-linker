@@ -12,7 +12,7 @@ export function TablePagination({
   handleSelectedPage,
 }: Readonly<TablePaginationType>) {
   const pagesCount =
-    totalPage === 0 ? getPagesCount(2, sizePerPage) : totalPage;
+    totalPage === 0 ? getPagesCount(totalData, sizePerPage) : totalPage;
   const pages = getPages(page, pagesCount, paginationSize);
   const maxData = page * sizePerPage;
   const minData = maxData - sizePerPage + 1;

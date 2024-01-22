@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "@/lib/axios";
 import {
   PencilSquareIcon,
@@ -10,6 +10,7 @@ import {
   TablePaginationType,
   ResponseGetShortLinkType,
   IShortLink,
+  ShortLinkUIContextType,
 } from "@/lib/model";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-hot-toast";
@@ -17,34 +18,12 @@ import { TableLoading } from "@/components/partial/TableLoading";
 import { TableDataNotFound } from "@/components/partial/TableDataNotFound";
 import { TablePagination } from "@/components/partial/TablePagination";
 import { ModalDeleteShortLink } from "@/components/partial/ModalDeleteShortLink";
+import { useShortLinkUIContext } from "@/context/ShortLinkUIContext";
 
 export default function TableShortLink() {
-  const [data, setData] = useState<ResponseGetShortLinkType>();
-  const [loading, setLoading] = useState(true);
-  const [sizePerPage, setSizePerPage] = useState(5);
-  const [page, setPage] = useState(1);
   const [openModalDelete, setOpenModalDelete] = useState(false);
-  const [dataSelected, setDataSelected] = useState<IShortLink>();
 
-  useEffect(() => {
-    const handleGetData = async () => {
-      try {
-        const response = await axios.get(
-          `/api/short-link?limit=${sizePerPage}&page=${page}`
-        );
-        if (response.status === 200) {
-          setData(response.data);
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
-        }
-      } catch (error: any) {
-        setLoading(false);
-        console.error("Error get data:", error.message);
-      }
-    };
-    handleGetData();
-  }, [sizePerPage, page]);
+  const shortLinkUIContext = useShortLinkUIContext();
 
   const handleCopyToClipboard = () => {
     toast.success("Copy to clipboard!");
@@ -55,25 +34,26 @@ export default function TableShortLink() {
   };
 
   const handlePage = (mode: string) => {
+    const page = shortLinkUIContext?.page ?? 0;
     if (mode === "next") {
-      setPage(page + 1);
-      setLoading(true);
+      shortLinkUIContext?.setPage(page + 1);
+      shortLinkUIContext?.setLoading(true);
     } else if (mode === "previous") {
-      setPage(page - 1);
-      setLoading(true);
+      shortLinkUIContext?.setPage(page - 1);
+      shortLinkUIContext?.setLoading(true);
     }
   };
 
   const handleSelectedPage = (currentPage: number) => {
-    setPage(currentPage);
-    setLoading(true);
+    shortLinkUIContext?.setPage(currentPage);
+    shortLinkUIContext?.setLoading(true);
   };
 
   const paginationProps: TablePaginationType = {
-    totalData: data?.total_data,
-    page: page,
+    totalData: shortLinkUIContext?.totalData ?? 0,
+    page: shortLinkUIContext?.page ?? 0,
     paginationSize: 5,
-    sizePerPage: sizePerPage,
+    sizePerPage: shortLinkUIContext?.sizePerPage ?? 0,
     totalPage: 0,
     handlePage: handlePage,
     handleSelectedPage: handleSelectedPage,
@@ -81,11 +61,12 @@ export default function TableShortLink() {
 
   const handleOpenModalDelete = (data: IShortLink) => {
     setOpenModalDelete((prev) => !prev);
-    setDataSelected(data);
+    shortLinkUIContext?.setDataSelected(data);
   };
 
-  const dataNotFound = !loading && data?.short_link_data.length === 0;
-  const dataFound = !loading && data?.short_link_data.length !== 0;
+  const dataNotFound =
+    !shortLinkUIContext?.loading && !shortLinkUIContext?.data;
+  const dataFound = !shortLinkUIContext?.loading && shortLinkUIContext?.data;
   return (
     <div>
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -106,12 +87,12 @@ export default function TableShortLink() {
           </tr>
         </thead>
         <tbody>
-          {loading && <TableLoading />}
-          {!loading &&
-            data?.short_link_data.map((item) => {
+          {shortLinkUIContext?.loading && <TableLoading />}
+          {!shortLinkUIContext?.loading &&
+            shortLinkUIContext?.data?.map((item) => {
               const shortLink = new URL(
                 item.destinationLink,
-                data.base_url
+                shortLinkUIContext.baseUrl
               ).toString();
               return (
                 <tr
@@ -187,11 +168,11 @@ export default function TableShortLink() {
         />
       )}
 
-      {dataSelected && (
+      {shortLinkUIContext?.dataSelected && (
         <ModalDeleteShortLink
           open={openModalDelete}
           setOpen={setOpenModalDelete}
-          dataSelected={dataSelected}
+          dataSelected={shortLinkUIContext?.dataSelected}
         />
       )}
     </div>

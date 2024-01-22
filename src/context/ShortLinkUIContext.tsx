@@ -1,3 +1,5 @@
+"use client";
+
 import React, {
   useState,
   createContext,
@@ -17,7 +19,10 @@ import {
 const ShortLinkUIContext = createContext<ShortLinkUIContextType | null>(null);
 
 export const useShortLinkUIContext = () => {
-  return useContext(ShortLinkUIContext);
+  const context = useContext(ShortLinkUIContext);
+  if (context === undefined)
+    throw new Error("Expected context value to be set");
+  return context;
 };
 
 export const ShortLinkUIConsumer = ShortLinkUIContext.Consumer;
@@ -52,6 +57,8 @@ export function ShortLinkUIProvider({
     }
   };
 
+  console.log(data);
+
   const handleResetData = useCallback(() => {
     setSizePerPage(5);
     setPage(1);
@@ -59,18 +66,21 @@ export function ShortLinkUIProvider({
   }, [sizePerPage, page]);
 
   const value = useMemo(() => {
-    const memo: ShortLinkUIContextType = {
-      base_url: data?.base_url,
-      total_data: data?.total_data,
+    return {
+      baseUrl: data?.base_url,
+      sizePerPage: sizePerPage,
+      page: page,
+      totalData: data?.total_data,
       data: data?.short_link_data,
       loading: loading,
       dataSelected: dataSelected,
       handleResetData: handleResetData,
       setLoading: setLoading,
       setDataSelected: setDataSelected,
+      setSizePerPage: setSizePerPage,
+      setPage: setPage,
     };
-    return memo;
-  }, [data, loading, dataSelected, handleResetData]);
+  }, [data, loading, sizePerPage, page, dataSelected, handleResetData]);
 
   return (
     <ShortLinkUIContext.Provider value={value}>

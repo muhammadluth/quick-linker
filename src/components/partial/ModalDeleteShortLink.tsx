@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { ModalDeleteType } from "@/lib/model";
+import { useShortLinkUIContext } from "@/context/ShortLinkUIContext";
 
 export function ModalDeleteShortLink({
   open,
@@ -11,6 +12,7 @@ export function ModalDeleteShortLink({
   dataSelected,
 }: Readonly<ModalDeleteType>) {
   const cancelButtonRef = useRef(null);
+  const shortLinkUIContext = useShortLinkUIContext();
 
   const handleDeleteData = async (id: string) => {
     try {
@@ -19,6 +21,7 @@ export function ModalDeleteShortLink({
         setTimeout(() => {
           toast.success(response.data.message);
           setOpen(false);
+          shortLinkUIContext?.handleResetData();
         }, 1000);
       }
     } catch (error: any) {
