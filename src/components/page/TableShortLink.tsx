@@ -7,10 +7,10 @@ import {
   ClipboardIcon,
 } from "@heroicons/react/24/outline";
 import {
-  ITablePagination,
-  IResponseGetShortLink,
+  TablePaginationType,
+  ResponseGetShortLinkType,
   IShortLink,
-} from "@/lib/interface";
+} from "@/lib/model";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-hot-toast";
 import { TableLoading } from "@/components/partial/TableLoading";
@@ -19,7 +19,7 @@ import { TablePagination } from "@/components/partial/TablePagination";
 import { ModalDeleteShortLink } from "@/components/partial/ModalDeleteShortLink";
 
 export default function TableShortLink() {
-  const [data, setData] = useState<IResponseGetShortLink>();
+  const [data, setData] = useState<ResponseGetShortLinkType>();
   const [loading, setLoading] = useState(true);
   const [sizePerPage, setSizePerPage] = useState(5);
   const [page, setPage] = useState(1);
@@ -69,7 +69,7 @@ export default function TableShortLink() {
     setLoading(true);
   };
 
-  const paginationProps: ITablePagination = {
+  const paginationProps: TablePaginationType = {
     totalData: data?.total_data,
     page: page,
     paginationSize: 5,

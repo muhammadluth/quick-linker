@@ -2,7 +2,7 @@
 import React from "react";
 import shortUUID, { uuid } from "short-uuid";
 import { Formik, FormikHelpers, Form, Field } from "formik";
-import { IFormShortLink, IShortLink } from "@/lib/interface";
+import { IFormShortLink, IShortLink } from "@/lib/model";
 import { useRouter } from "next/navigation";
 import axios from "@/lib/axios";
 import { toast } from "react-hot-toast";

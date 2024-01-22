@@ -3,13 +3,13 @@ import axios from "@/lib/axios";
 import { toast } from "react-hot-toast";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { IModalDelete } from "@/lib/interface";
+import { ModalDeleteType } from "@/lib/model";
 
 export function ModalDeleteShortLink({
   open,
   setOpen,
   dataSelected,
-}: Readonly<IModalDelete>) {
+}: Readonly<ModalDeleteType>) {
   const cancelButtonRef = useRef(null);
 
   const handleDeleteData = async (id: string) => {

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, lazy } from "react";
-import { ISlugParams } from "@/lib/interface";
+import { ISlugParams } from "@/lib/model";
 import axios from "@/lib/axios";
 
 const Loading = lazy(() => import("@/components/page/Loading"));

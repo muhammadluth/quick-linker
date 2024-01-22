@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { IResponseGetShortLink } from "@/lib/interface";
+import { ResponseGetShortLinkType } from "@/lib/model";
 
 
 
@@ -38,7 +38,7 @@ export async function GET(req: Request) {
         take: limit,
     });
     if (responseCount && responseList) {
-        const data: IResponseGetShortLink = {
+        const data: ResponseGetShortLinkType = {
             base_url: req.headers.get("referer") ?? "",
             total_data: responseCount,
             short_link_data: responseList

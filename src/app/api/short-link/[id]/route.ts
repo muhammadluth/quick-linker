@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { IIDParams } from "@/lib/interface";
+import { IIDParams } from "@/lib/model";
 
 export async function GET(req: Request, { params: { id } }: IIDParams) {
     const response = await prisma.shortLink.findUnique({
