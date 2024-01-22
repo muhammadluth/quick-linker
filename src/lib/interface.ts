@@ -30,7 +30,7 @@ export interface IIDParams {
     };
 }
 
-export interface IPagination {
+export interface ITablePagination {
     totalData: number | undefined,
     totalPage: number
     sizePerPage: number
@@ -38,4 +38,10 @@ export interface IPagination {
     paginationSize: number
     handlePage: (mode: string) => void
     handleSelectedPage: (currentPage: number) => void
+}
+
+export interface IModalDelete {
+    open: boolean
+    setOpen: (mode: boolean) => void
+    dataSelected: IShortLink
 }

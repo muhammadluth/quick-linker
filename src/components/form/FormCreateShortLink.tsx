@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import axios from "@/lib/axios";
 import { toast } from "react-hot-toast";
 
-export function FormShortLink() {
+export function FormCreateShortLink() {
   const router = useRouter();
   const initialValues: IFormShortLink = { urlName: "", url: "" };
 

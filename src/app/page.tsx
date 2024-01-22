@@ -1,8 +1,8 @@
 import React, { lazy } from "react";
 import { HandRaisedIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
-import { FormShortLink } from "@/components/form/FormShortLink";
+import { FormCreateShortLink } from "@/components/form/FormCreateShortLink";
 
-const Table = lazy(() => import("@/components/page/Table"));
+const TableShortLink = lazy(() => import("@/components/page/TableShortLink"));
 
 export default async function Home() {
   return (
@@ -17,7 +17,7 @@ export default async function Home() {
               Quick Linker adalah aplikasi untuk membuat link kamu yang dulu
               panjang kini jadi lebih singkat
             </p>
-            <FormShortLink />
+            <FormCreateShortLink />
           </div>
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:pt-2">
             <div className="flex flex-col items-start">
@@ -49,7 +49,7 @@ export default async function Home() {
           </dl>
         </div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-20">
-          <Table />
+          <TableShortLink />
         </div>
       </div>
       <div

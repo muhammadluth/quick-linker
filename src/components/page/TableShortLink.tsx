@@ -6,18 +6,25 @@ import {
   TrashIcon,
   ClipboardIcon,
 } from "@heroicons/react/24/outline";
-import { IPagination, IResponseGetShortLink } from "@/lib/interface";
+import {
+  ITablePagination,
+  IResponseGetShortLink,
+  IShortLink,
+} from "@/lib/interface";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-hot-toast";
 import { TableLoading } from "@/components/partial/TableLoading";
 import { TableDataNotFound } from "@/components/partial/TableDataNotFound";
 import { TablePagination } from "@/components/partial/TablePagination";
+import { ModalDeleteShortLink } from "@/components/partial/ModalDeleteShortLink";
 
-export default function Table() {
+export default function TableShortLink() {
   const [data, setData] = useState<IResponseGetShortLink>();
   const [loading, setLoading] = useState(true);
   const [sizePerPage, setSizePerPage] = useState(5);
   const [page, setPage] = useState(1);
+  const [openModalDelete, setOpenModalDelete] = useState(false);
+  const [dataSelected, setDataSelected] = useState<IShortLink>();
 
   useEffect(() => {
     const handleGetData = async () => {
@@ -62,21 +69,7 @@ export default function Table() {
     setLoading(true);
   };
 
-  const handleDeleteData = async (id: string) => {
-    try {
-      const response = await axios.delete(`/api/short-link/${id}`);
-      if (response.status === 200) {
-        setTimeout(() => {
-          toast.success(response.data.message);
-        }, 1000);
-      }
-    } catch (error: any) {
-      console.error("Error delete data:", error.message);
-      toast.error("error delete short link");
-    }
-  };
-
-  const paginationProps: IPagination = {
+  const paginationProps: ITablePagination = {
     totalData: data?.total_data,
     page: page,
     paginationSize: 5,
@@ -86,9 +79,13 @@ export default function Table() {
     handleSelectedPage: handleSelectedPage,
   };
 
+  const handleOpenModalDelete = (data: IShortLink) => {
+    setOpenModalDelete((prev) => !prev);
+    setDataSelected(data);
+  };
+
   const dataNotFound = !loading && data?.short_link_data.length === 0;
   const dataFound = !loading && data?.short_link_data.length !== 0;
-
   return (
     <div>
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -165,7 +162,7 @@ export default function Table() {
                         />
                       </button>
                       <button
-                        onClick={() => handleDeleteData(item.id)}
+                        onClick={() => handleOpenModalDelete(item)}
                         className="flex-none float-right rounded-md bg-red-600 p-1  mx-1 text-sm font-semibold text-white shadow-sm hover:bg-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
                       >
                         <TrashIcon className="h-7 w-7" aria-hidden="true" />
@@ -187,6 +184,14 @@ export default function Table() {
           paginationSize={paginationProps.paginationSize}
           handlePage={paginationProps.handlePage}
           handleSelectedPage={paginationProps.handleSelectedPage}
+        />
+      )}
+
+      {dataSelected && (
+        <ModalDeleteShortLink
+          open={openModalDelete}
+          setOpen={setOpenModalDelete}
+          dataSelected={dataSelected}
         />
       )}
     </div>

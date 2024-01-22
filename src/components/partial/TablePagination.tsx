@@ -1,5 +1,5 @@
 import React from "react";
-import { IPagination } from "@/lib/interface";
+import { ITablePagination } from "@/lib/interface";
 import { getPages, getPagesCount } from "@/lib/utils";
 
 export function TablePagination({
@@ -10,7 +10,7 @@ export function TablePagination({
   paginationSize,
   handlePage,
   handleSelectedPage,
-}: Readonly<IPagination>) {
+}: Readonly<ITablePagination>) {
   const pagesCount =
     totalPage === 0 ? getPagesCount(2, sizePerPage) : totalPage;
   const pages = getPages(page, pagesCount, paginationSize);
