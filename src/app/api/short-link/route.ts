@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { IResponseGetShortLink } from "@/lib/interface";
 
 
+
 const regexURL: RegExp = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
 
 export async function POST(req: Request) {
@@ -22,14 +23,25 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-    const response = await prisma.shortLink.findMany({
-        // skip:"",
-        // take: "",
+    const { searchParams } = new URL(req.url);
+    const limit: number = Number(searchParams.get("limit"));
+    const page: number = Number(searchParams.get("page"));
+
+    let skip = 0
+    if (page > 0) {
+        skip = (page - 1) * limit
+    }
+
+    const responseCount = await prisma.shortLink.count();
+    const responseList = await prisma.shortLink.findMany({
+        skip: skip,
+        take: limit,
     });
-    if (response) {
+    if (responseCount && responseList) {
         const data: IResponseGetShortLink = {
-            base_url: req.headers.get("referer") || "",
-            short_link_data: response
+            base_url: req.headers.get("referer") ?? "",
+            total_data: responseCount,
+            short_link_data: responseList
         }
         return NextResponse.json(data, { status: 200 });
     } else {

@@ -1,39 +1,42 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Key } from "react";
 import axios from "@/lib/axios";
 import Image from "next/image";
 import {
   PencilSquareIcon,
   TrashIcon,
   ClipboardIcon,
-  TableCellsIcon,
 } from "@heroicons/react/24/outline";
-import { IResponseGetShortLink } from "@/lib/interface";
+import { IPagination, IResponseGetShortLink } from "@/lib/interface";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-hot-toast";
+import { getPages, getPagesCount } from "@/lib/utils";
 
 export default function Table() {
   const [data, setData] = useState<IResponseGetShortLink>();
   const [loading, setLoading] = useState(true);
-
-  const handleGetData = async () => {
-    try {
-      const response = await axios.get(`/api/short-link`);
-      if (response.status === 200) {
-        setData(response.data);
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
-      }
-    } catch (error: any) {
-      setLoading(false);
-      console.error("Error get data:", error.message);
-    }
-  };
+  const [sizePerPage, setSizePerPage] = useState(5);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
+    const handleGetData = async () => {
+      try {
+        const response = await axios.get(
+          `/api/short-link?limit=${sizePerPage}&page=${page}`
+        );
+        if (response.status === 200) {
+          setData(response.data);
+          setTimeout(() => {
+            setLoading(false);
+          }, 1000);
+        }
+      } catch (error: any) {
+        setLoading(false);
+        console.error("Error get data:", error.message);
+      }
+    };
     handleGetData();
-  }, []);
+  }, [sizePerPage, page]);
 
   const handleCopyToClipboard = () => {
     toast.success("Copy to clipboard!");
@@ -41,6 +44,21 @@ export default function Table() {
 
   const handleComingSoon = () => {
     toast.success("Coming soon!");
+  };
+
+  const handlePage = (mode: string) => {
+    if (mode === "next") {
+      setPage(page + 1);
+      setLoading(true);
+    } else if (mode === "previous") {
+      setPage(page - 1);
+      setLoading(true);
+    }
+  };
+
+  const handleSelectedPage = (currentPage: number) => {
+    setPage(currentPage);
+    setLoading(true);
   };
 
   const handleDeleteData = async (id: string) => {
@@ -51,12 +69,24 @@ export default function Table() {
           toast.success(response.data.message);
         }, 1000);
       }
-      handleGetData();
     } catch (error: any) {
       console.error("Error delete data:", error.message);
       toast.error("error delete short link");
     }
   };
+
+  const paginationProps: IPagination = {
+    totalData: data?.total_data,
+    page: page,
+    paginationSize: 5,
+    sizePerPage: sizePerPage,
+    totalPage: 0,
+    handlePage: handlePage,
+    handleSelectedPage: handleSelectedPage,
+  };
+
+  const dataNotFound = !loading && data?.short_link_data.length === 0;
+  const dataFound = !loading && data?.short_link_data.length !== 0;
 
   return (
     <div>
@@ -146,81 +176,18 @@ export default function Table() {
             })}
         </tbody>
       </table>
-      {!loading && data?.short_link_data.length === 0 && <TableDataNotFound />}
-      {/* <nav
-              className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
-              aria-label="Table navigation"
-            >
-              <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
-                Showing{" "}
-                <span className="font-semibold text-gray-900 dark:text-white">
-                  1-10
-                </span>{" "}
-                of{" "}
-                <span className="font-semibold text-gray-900 dark:text-white">
-                  1000
-                </span>
-              </span>
-              <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
-                <li>
-                  <a
-                    href="#"
-                    className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                  >
-                    Previous
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                  >
-                    1
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                  >
-                    2
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    aria-current="page"
-                    className="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-                  >
-                    3
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                  >
-                    4
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                  >
-                    5
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                  >
-                    Next
-                  </a>
-                </li>
-              </ul>
-            </nav> */}
+      {dataNotFound && <TableDataNotFound />}
+      {dataFound && (
+        <TablePagination
+          totalData={paginationProps.totalData}
+          page={paginationProps.page}
+          sizePerPage={paginationProps.sizePerPage}
+          totalPage={paginationProps.totalPage}
+          paginationSize={paginationProps.paginationSize}
+          handlePage={paginationProps.handlePage}
+          handleSelectedPage={paginationProps.handleSelectedPage}
+        />
+      )}
     </div>
   );
 }
@@ -370,6 +337,75 @@ function TableDataNotFound() {
           alt="not found"
         />
       </div>
+    </div>
+  );
+}
+
+function TablePagination({
+  totalData,
+  page,
+  sizePerPage,
+  totalPage,
+  paginationSize,
+  handlePage,
+  handleSelectedPage,
+}: Readonly<IPagination>) {
+  const pagesCount =
+    totalPage === 0 ? getPagesCount(2, sizePerPage) : totalPage;
+  const pages = getPages(page, pagesCount, paginationSize);
+  const maxData = page * sizePerPage;
+  const minData = maxData - sizePerPage + 1;
+  const minPage = pages[0];
+  const maxPage = pages[pages.length - 1];
+  return (
+    <div
+      className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
+      aria-label="Table navigation"
+    >
+      <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+        Showing{" "}
+        <span className="font-semibold text-gray-900 dark:text-white">
+          {minData}-{maxData}{" "}
+        </span>
+        of{" "}
+        <span className="font-semibold text-gray-900 dark:text-white">
+          {totalData}
+        </span>
+      </span>
+      <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+        <li>
+          <button
+            disabled={page === minPage}
+            onClick={() => handlePage("previous")}
+            className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+          >
+            Previous
+          </button>
+        </li>
+        {pages.map((p) => (
+          <li key={p}>
+            <button
+              onClick={() => handleSelectedPage(p)}
+              className={
+                page === p
+                  ? "flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                  : "flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              }
+            >
+              {p}
+            </button>
+          </li>
+        ))}
+        <li>
+          <button
+            disabled={page === maxPage}
+            onClick={() => handlePage("next")}
+            className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+          >
+            Next
+          </button>
+        </li>
+      </ul>
     </div>
   );
 }
