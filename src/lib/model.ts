@@ -39,6 +39,16 @@ export type ModalDeleteType = {
     dataSelected: IShortLink
 }
 
+export type ModalUpdateType = {
+    open: boolean
+    setOpen: Dispatch<SetStateAction<boolean>>
+    dataSelected: IShortLink
+}
+
+export type UpdateType = {
+    dataSelected: IShortLink
+}
+
 
 export type TablePaginationType = {
     totalData: number,
@@ -58,10 +68,8 @@ export type ShortLinkUIContextType = {
     page: number | undefined;
     data: IShortLink[] | undefined;
     loading: boolean;
-    dataSelected: IShortLink | undefined;
     handleResetData: () => void
     setLoading: Dispatch<SetStateAction<boolean>>
-    setDataSelected: Dispatch<SetStateAction<IShortLink | undefined>>
     setSizePerPage: Dispatch<SetStateAction<number>>
     setPage: Dispatch<SetStateAction<number>>
 }

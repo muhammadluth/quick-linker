@@ -34,7 +34,6 @@ export function ShortLinkUIProvider({
   const [loading, setLoading] = useState(true);
   const [sizePerPage, setSizePerPage] = useState(5);
   const [page, setPage] = useState(1);
-  const [dataSelected, setDataSelected] = useState<IShortLink>();
 
   useEffect(() => {
     handleGetData(sizePerPage, page);
@@ -73,14 +72,12 @@ export function ShortLinkUIProvider({
       totalData: data?.total_data,
       data: data?.short_link_data,
       loading: loading,
-      dataSelected: dataSelected,
       handleResetData: handleResetData,
       setLoading: setLoading,
-      setDataSelected: setDataSelected,
       setSizePerPage: setSizePerPage,
       setPage: setPage,
     };
-  }, [data, loading, sizePerPage, page, dataSelected, handleResetData]);
+  }, [data, loading, sizePerPage, page, handleResetData]);
 
   return (
     <ShortLinkUIContext.Provider value={value}>

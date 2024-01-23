@@ -2,33 +2,43 @@ import React, { Fragment, useRef } from "react";
 import axios from "@/lib/axios";
 import { toast } from "react-hot-toast";
 import { Dialog, Transition } from "@headlessui/react";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { ModalDeleteType } from "@/lib/model";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import { IFormShortLink, IShortLink, ModalUpdateType } from "@/lib/model";
 import { useShortLinkUIContext } from "@/context/ShortLinkUIContext";
+import { FormUpdateShortLink } from "../form/FormUpdateShortLink";
 
-export function ModalDeleteShortLink({
+export function ModalUpdateShortLink({
   open,
   setOpen,
   dataSelected,
-}: Readonly<ModalDeleteType>) {
+}: Readonly<ModalUpdateType>) {
   const cancelButtonRef = useRef(null);
   const shortLinkUIContext = useShortLinkUIContext();
 
-  const handleDeleteData = async (id: string) => {
-    try {
-      const response = await axios.delete(`/api/short-link/${id}`);
-      if (response.status === 200) {
-        setTimeout(() => {
-          toast.success(response.data.message);
-          setOpen(false);
-          shortLinkUIContext?.handleResetData();
-        }, 1000);
-      }
-    } catch (error: any) {
-      console.error("Error delete data:", error.message);
-      toast.error("error delete short link");
-    }
-  };
+  // const handleUpdateData = async (
+  //   id: string,
+  //   data: IShortLink,
+  //   actions: FormikHelpers<IFormShortLink>
+  // ) => {
+  //   try {
+  //     const response = await axios.put(`/api/short-link/${id}`, data);
+  //     if (response.status === 200) {
+  //       setTimeout(() => {
+  //         toast.success(response.data.message);
+  //         setOpen(false);
+  //         shortLinkUIContext?.handleResetData();
+  //       }, 1000);
+  //     }
+  //   } catch (error: any) {
+  //     console.error("Error delete data:", error.message);
+  //     toast.error("error delete short link");
+  //   }
+  // };
+
+  const shortLink = new URL(
+    dataSelected.destinationLink,
+    shortLinkUIContext?.baseUrl
+  ).toString();
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -65,8 +75,8 @@ export function ModalDeleteShortLink({
                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                      <TrashIcon
-                        className="h-6 w-6 text-red-600"
+                      <PencilSquareIcon
+                        className="h-6 w-6 text-yellow-600"
                         aria-hidden="true"
                       />
                     </div>
@@ -75,25 +85,28 @@ export function ModalDeleteShortLink({
                         as="h3"
                         className="text-base font-semibold leading-6 text-gray-900"
                       >
-                        Delete short link
+                        Update short link
                       </Dialog.Title>
                       <div className="mt-2">
-                        <p className="text-sm text-gray-500">
-                          Are you sure you want to delete your short link? This
-                          data will be permanently removed. This action cannot
-                          be undone.
-                        </p>
+                        <a
+                          href={shortLink}
+                          className="text-sm text-gray-500 hover:underline hover:text-blue-600"
+                        >
+                          {shortLink}
+                        </a>
                       </div>
+                      <FormUpdateShortLink dataSelected={dataSelected} />
                     </div>
                   </div>
                 </div>
+
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                    onClick={() => handleDeleteData(dataSelected.id)}
+                    className="inline-flex w-full justify-center rounded-md bg-yellow-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-yellow-500 sm:ml-3 sm:w-auto"
+                    // onClick={() => handleUpdateData(dataSelected!.id)}
                   >
-                    Delete
+                    Update
                   </button>
                   <button
                     type="button"

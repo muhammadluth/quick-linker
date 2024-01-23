@@ -3,12 +3,12 @@ import React from "react";
 import shortUUID, { uuid } from "short-uuid";
 import { Formik, FormikHelpers, Form, Field } from "formik";
 import { IFormShortLink, IShortLink } from "@/lib/model";
-import { useRouter } from "next/navigation";
 import axios from "@/lib/axios";
 import { toast } from "react-hot-toast";
+import { useShortLinkUIContext } from "@/context/ShortLinkUIContext";
 
 export function FormCreateShortLink() {
-  const router = useRouter();
+  const shortLinkUIContext = useShortLinkUIContext();
   const initialValues: IFormShortLink = { urlName: "", url: "" };
 
   const handleSubmit = async (
@@ -17,12 +17,11 @@ export function FormCreateShortLink() {
   ) => {
     try {
       const response = await axios.post("/api/short-link", data);
-      router.refresh();
       actions.resetForm();
       actions.setSubmitting(false);
-      toast.success(response.data.message);
       setTimeout(() => {
-        window.location.reload();
+        toast.success(response.data.message);
+        shortLinkUIContext?.handleResetData();
       }, 500);
     } catch (error: any) {
       console.error("Error creating data:", error.message);

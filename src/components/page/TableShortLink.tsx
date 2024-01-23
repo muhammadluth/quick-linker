@@ -17,20 +17,20 @@ import { toast } from "react-hot-toast";
 import { TableLoading } from "@/components/partial/TableLoading";
 import { TableDataNotFound } from "@/components/partial/TableDataNotFound";
 import { TablePagination } from "@/components/partial/TablePagination";
+import { ModalUpdateShortLink } from "@/components/partial/ModalUpdateShortLink";
 import { ModalDeleteShortLink } from "@/components/partial/ModalDeleteShortLink";
 import { useShortLinkUIContext } from "@/context/ShortLinkUIContext";
 
 export default function TableShortLink() {
+  const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModalDelete, setOpenModalDelete] = useState(false);
+  const [dataSelectedUpdate, setDataSelectedUpdate] = useState<IShortLink>();
+  const [dataSelectedDelete, setDataSelectedDelete] = useState<IShortLink>();
 
   const shortLinkUIContext = useShortLinkUIContext();
 
   const handleCopyToClipboard = () => {
     toast.success("Copy to clipboard!");
-  };
-
-  const handleComingSoon = () => {
-    toast.success("Coming soon!");
   };
 
   const handlePage = (mode: string) => {
@@ -59,9 +59,14 @@ export default function TableShortLink() {
     handleSelectedPage: handleSelectedPage,
   };
 
+  const handleOpenModalUpdate = (data: IShortLink) => {
+    setOpenModalUpdate((prev) => !prev);
+    setDataSelectedUpdate(data);
+  };
+
   const handleOpenModalDelete = (data: IShortLink) => {
     setOpenModalDelete((prev) => !prev);
-    shortLinkUIContext?.setDataSelected(data);
+    setDataSelectedDelete(data);
   };
 
   const dataNotFound =
@@ -134,7 +139,7 @@ export default function TableShortLink() {
                         </button>
                       </CopyToClipboard>
                       <button
-                        onClick={handleComingSoon}
+                        onClick={() => handleOpenModalUpdate(item)}
                         className="flex-none float-right rounded-md bg-yellow-600 p-1  mx-1 text-sm font-semibold text-white shadow-sm hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-500"
                       >
                         <PencilSquareIcon
@@ -168,11 +173,18 @@ export default function TableShortLink() {
         />
       )}
 
-      {shortLinkUIContext?.dataSelected && (
+      {dataSelectedUpdate && (
+        <ModalUpdateShortLink
+          open={openModalUpdate}
+          setOpen={setOpenModalUpdate}
+          dataSelected={dataSelectedUpdate}
+        />
+      )}
+      {dataSelectedDelete && (
         <ModalDeleteShortLink
           open={openModalDelete}
           setOpen={setOpenModalDelete}
-          dataSelected={shortLinkUIContext?.dataSelected}
+          dataSelected={dataSelectedDelete}
         />
       )}
     </div>
