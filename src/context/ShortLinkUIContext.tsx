@@ -56,8 +56,6 @@ export function ShortLinkUIProvider({
     }
   };
 
-  console.log(data);
-
   const handleResetData = useCallback(() => {
     setSizePerPage(5);
     setPage(1);

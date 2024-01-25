@@ -2,7 +2,7 @@
 import React from "react";
 import shortUUID, { uuid } from "short-uuid";
 import { Formik, FormikHelpers, Form, Field } from "formik";
-import { IFormShortLink, IShortLink } from "@/lib/model";
+import { IFormShortLink, ICreateShortLink } from "@/lib/model";
 import axios from "@/lib/axios";
 import { toast } from "react-hot-toast";
 import { useShortLinkUIContext } from "@/context/ShortLinkUIContext";
@@ -12,7 +12,7 @@ export function FormCreateShortLink() {
   const initialValues: IFormShortLink = { urlName: "", url: "" };
 
   const handleSubmit = async (
-    data: IShortLink,
+    data: ICreateShortLink,
     actions: FormikHelpers<IFormShortLink>
   ) => {
     try {
@@ -28,13 +28,14 @@ export function FormCreateShortLink() {
       toast.error("error creating short link");
     }
   };
+
   return (
     <Formik
       enableReinitialize
       initialValues={initialValues}
       onSubmit={(values, actions) => {
         const destinationLink = shortUUID.generate();
-        const shortLinkData: IShortLink = {
+        const shortLinkData: ICreateShortLink = {
           id: uuid.toString(),
           name: values.urlName,
           sourceLink: values.url,

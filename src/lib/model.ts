@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, MutableRefObject, SetStateAction } from "react";
 
 export interface IFormShortLink {
     urlName: string;
@@ -17,6 +17,21 @@ export interface IShortLink {
     sourceLink: string;
     destinationLink: string;
     createdAt?: Date | null;
+    updatedAt?: Date | null;
+}
+
+export interface ICreateShortLink {
+    id: string;
+    name: string;
+    sourceLink: string;
+    destinationLink: string;
+    createdAt?: Date | null;
+    updatedAt?: Date | null;
+}
+
+export interface IUpdateShortLink {
+    name: string;
+    sourceLink: string;
     updatedAt?: Date | null;
 }
 
@@ -47,6 +62,8 @@ export type ModalUpdateType = {
 
 export type UpdateType = {
     dataSelected: IShortLink
+    setOpen: Dispatch<SetStateAction<boolean>>
+    cancelButtonRef: MutableRefObject<null>
 }
 
 
